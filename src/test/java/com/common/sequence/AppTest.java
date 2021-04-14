@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 @SpringBootTest
 public class AppTest {
     ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
-            50, 51, 10000, TimeUnit.SECONDS, new LinkedBlockingQueue(), new ThreadPoolExecutor.AbortPolicy());
+            50, 51, 30, TimeUnit.SECONDS, new LinkedBlockingQueue(), new ThreadPoolExecutor.AbortPolicy());
 
     @Autowired
     @Qualifier("sequenceForTest")
@@ -40,13 +40,12 @@ public class AppTest {
             threadPoolExecutor.execute(() -> {
                 for (int j = 0; j < 100; j++) {
                     System.out.println(sequenceForFXS.nextValue());
-                    System.out.println(sequenceForTest.nextValue());
+//                    System.out.println(sequenceForTest.nextValue());
                 }
                 countDownLatch.countDown();
             });
         }
         countDownLatch.await();
-        Thread.sleep(100 * 1000);
         if (!threadPoolExecutor.isShutdown()) {
             threadPoolExecutor.shutdown();
         }
